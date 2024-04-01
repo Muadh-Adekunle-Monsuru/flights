@@ -1,5 +1,13 @@
+import React from 'react';
 import { useState, useEffect } from 'react';
-import { Platform, Text, View, ScrollView, StyleSheet } from 'react-native';
+import {
+	Platform,
+	Text,
+	View,
+	ScrollView,
+	StyleSheet,
+	Alert,
+} from 'react-native';
 import BigCard from './bigcard';
 import {
 	openDatabase,
@@ -9,7 +17,6 @@ import {
 	deleteAll,
 } from './database';
 import { rawData } from './rawdata';
-import React from 'react';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { callApi } from './timelogic';
 import { fetchFlightData } from './apicall';
@@ -21,9 +28,10 @@ export default function App() {
 	const [raw, setRaw] = useState({});
 	const db = openDatabase();
 	useEffect(() => {
-		callApi(db);
+		callApi(db, setFlights);
 		const fetch = async () => {
 			fetchData(db, setFlights);
+			Alert.alert('fetching');
 		};
 		fetch();
 		fetchData(db, setFlights);

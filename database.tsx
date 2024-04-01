@@ -1,7 +1,7 @@
 import * as SQLite from 'expo-sqlite';
 import { StyleSheet, Platform, Text, View } from 'react-native';
 import { format } from 'date-fns'; // Importing date-fns for date formatting
-
+import { Alert } from 'react-native';
 export function openDatabase() {
 	if (Platform.OS === 'web') {
 		return {
@@ -18,17 +18,18 @@ export function openDatabase() {
 }
 export const createTable = (db) => {
 	db.transaction((tx) => {
-		console.log('creating table');
+		// console.log('creating table');
 		tx.executeSql(
 			'CREATE TABLE IF NOT EXISTS arrivals (id INTEGER PRIMARY KEY NOT NULL, flight_status TEXT, flight_iata TEXT, airline_name TEXT, departure_airport TEXT, departure_iata TEXT, arrival_airport TEXT, arrival_iata TEXT, arrival_estimated TEXT, departure_time TEXT);',
 			[],
 			(_, result) => {
-				console.log('table created');
+				// console.log('table created');
 			}
 		);
 	});
 };
 export const add = (text, db) => {
+	Alert.alert('Adding data to database');
 	db.transaction((tx) => {
 		text.data.map((text) => {
 			tx.executeSql(
@@ -53,6 +54,7 @@ export const add = (text, db) => {
 				},
 				(_, error) => {
 					console.error('Error inserting records:', error);
+					Alert.alert('Error inserting records');
 					return false; // Rollback transaction
 				}
 			);
@@ -68,6 +70,7 @@ export const deleteRecord = (text, db) => {
 	});
 };
 export const deleteAll = (db) => {
+	Alert.alert('Deleting all data from database');
 	db.transaction((tx) => {
 		tx.executeSql(`delete from arrivals`, [], (_, result) => {
 			console.log('All records deleted');
@@ -80,8 +83,9 @@ const getCurrentDateTime = () => {
 };
 
 export const fetchData = async (db, setFlights) => {
+	Alert.alert('Reading data from database');
 	const currentTime = getCurrentDateTime();
-	console.log(currentTime);
+	// console.log(currentTime);
 	await db.transaction((tx) => {
 		tx.executeSql(
 			`select * from arrivals where arrival_estimated > ? ORDER By arrival_estimated;`,

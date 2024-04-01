@@ -1,7 +1,8 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { fetchFlightData } from './apicall';
-import { add, deleteAll, createTable } from './database';
-export const callApi = async (db) => {
+import { add, deleteAll, createTable, fetchData } from './database';
+import { Alert } from 'react-native';
+export const callApi = async (db, setFlights) => {
 	try {
 		// Get the current time
 		const currentTime = new Date();
@@ -14,12 +15,14 @@ export const callApi = async (db) => {
 
 		// If last call time exists and it's today, don't make the call
 		if (lastCallTime && isToday(currentTime, new Date(lastCallTime))) {
+			Alert.alert('API already called today');
 			console.log('API already called today');
 			return;
 		}
 
 		// If numCallsToday exceeds 3, don't make the call
 		if (numCallsToday && parseInt(numCallsToday) >= 3) {
+			Alert.alert('API call limit reached for today');
 			console.log('API call limit reached for today');
 			return;
 		}
@@ -30,12 +33,12 @@ export const callApi = async (db) => {
 		// Make API call based on time slot
 		switch (timeSlot) {
 			case 'morning':
-				await makeApiCall(db);
+				await makeApiCall(db, setFlights);
 				break;
 			case 'afternoon':
 				// Check if morning API call was made
 				if (!lastCallTime || !isToday(currentTime, new Date(lastCallTime))) {
-					await makeApiCall(db);
+					await makeApiCall(db, setFlights);
 				}
 				break;
 			case 'night':
@@ -44,7 +47,7 @@ export const callApi = async (db) => {
 					(!lastCallTime || !isToday(currentTime, new Date(lastCallTime))) &&
 					parseInt(numCallsToday) < 2
 				) {
-					await makeApiCall(db);
+					await makeApiCall(db, setFlights);
 				}
 				break;
 			default:
@@ -52,10 +55,11 @@ export const callApi = async (db) => {
 		}
 	} catch (error) {
 		console.error('Error calling API:', error);
+		Alert.alert('Error calling API:', error);
 	}
 };
 
-const makeApiCall = async (db) => {
+const makeApiCall = async (db, setFlights) => {
 	// Call your API to fetch data
 	const jsonData = await fetchFlightData();
 
@@ -64,6 +68,7 @@ const makeApiCall = async (db) => {
 		deleteAll(db);
 		add(jsonData, db);
 		console.log(jsonData);
+		fetchData(db, setFlights);
 	}
 
 	// Store the current time as the last call time
@@ -79,6 +84,7 @@ const makeApiCall = async (db) => {
 	}
 	await AsyncStorage.setItem('numCallsToday', numCallsToday.toString());
 	console.log('API call successful');
+	Alert.alert('Api call successful');
 };
 
 const getTimeSlot = (time) => {
