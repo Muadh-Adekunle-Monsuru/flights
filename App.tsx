@@ -1,45 +1,22 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
-import {
-	Platform,
-	Text,
-	View,
-	ScrollView,
-	StyleSheet,
-	Alert,
-} from 'react-native';
+import { Text, ScrollView, StyleSheet } from 'react-native';
 import BigCard from './bigcard';
-import {
-	openDatabase,
-	createTable,
-	add,
-	fetchData,
-	deleteAll,
-} from './database';
-import { rawData } from './rawdata';
+import { openDatabase } from './database';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { callApi } from './timelogic';
-import { fetchFlightData } from './apicall';
-import { testData } from './testdata';
-import { format } from 'date-fns'; // Importing date-fns for date formatting
-
+import tw from 'twrnc';
 export default function App() {
 	const [flights, setFlights] = useState([]);
-	const [raw, setRaw] = useState({});
 	const db = openDatabase();
 	useEffect(() => {
 		callApi(db, setFlights);
-		const fetch = async () => {
-			fetchData(db, setFlights);
-			Alert.alert('fetching');
-		};
-		fetch();
-		fetchData(db, setFlights);
 	}, []);
 
 	return (
 		<SafeAreaProvider>
 			<SafeAreaView style={styles.container}>
+				<Text style={tw`font-bold text-3xl pt-5`}>Flights</Text>
 				<ScrollView style={{ width: '100%' }}>
 					{flights.map((data, index) => (
 						<BigCard flight={data} key={index} />
