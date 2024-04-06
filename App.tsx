@@ -2,21 +2,20 @@ import React from 'react';
 import { useState, useEffect } from 'react';
 import { Text, ScrollView, StyleSheet } from 'react-native';
 import BigCard from './bigcard';
-import { openDatabase } from './database';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { callApi } from './timelogic';
 import tw from 'twrnc';
+
 export default function App() {
 	const [flights, setFlights] = useState([]);
-	const db = openDatabase();
 	useEffect(() => {
-		callApi(db, setFlights);
+		callApi(setFlights);
 	}, []);
 
 	return (
 		<SafeAreaProvider>
 			<SafeAreaView style={styles.container}>
-				<Text style={tw`font-bold text-3xl pt-5`}>Flights</Text>
+				<Text style={tw`font-bold text-3xl pt-5`}>Flights This Hour</Text>
 				<ScrollView style={{ width: '100%' }}>
 					{flights.map((data, index) => (
 						<BigCard flight={data} key={index} />
