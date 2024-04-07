@@ -1,4 +1,6 @@
 import { Alert } from 'react-native';
+import axios from 'axios';
+
 export async function fetchFlightData() {
 	const accessKey = '24e40b49d0f65b22757c2e3ae32df4cb';
 	const arrIATA = 'LOS'; // Destination airport code (Lagos)
@@ -6,16 +8,11 @@ export async function fetchFlightData() {
 
 	Alert.alert('Fetching Data');
 	try {
-		const response = await fetch(apiUrl);
-		if (!response.ok) {
-			throw new Error('Failed to fetch data');
-			Alert.alert('Failed to fetch data');
-		}
-		const data = await response.json();
+		const response = await axios.get(apiUrl);
+		const data = response.data;
 		return data;
 	} catch (error) {
 		console.error('Error fetching flight data:', error);
 		Alert.alert('Error Fetching Data');
-		throw error;
 	}
 }

@@ -15,7 +15,7 @@ export default function App() {
 	return (
 		<SafeAreaProvider>
 			<SafeAreaView style={styles.container}>
-				<Text style={tw`font-bold text-3xl pt-5`}>Flights This Hour</Text>
+				<Text style={tw`font-bold text-4xl pt-5`}>Flight This Hour</Text>
 				<ScrollView style={{ width: '100%' }}>
 					{flights.map((data, index) => (
 						<BigCard flight={data} key={index} />
