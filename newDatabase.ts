@@ -38,7 +38,8 @@ export const getData = async (setFlight) => {
 		const { data, error } = await supabase
 			.from('flights')
 			.select()
-			.like('arrival_estimated', `${oneHourLaterISOString}%`);
+			.like('arrival_estimated', `${oneHourLaterISOString}%`)
+			.order('arrival_estimated', { ascending: true });
 
 		if (error) {
 			throw new Error(JSON.stringify(error));
@@ -99,10 +100,9 @@ export const deleteRecordsNotCreatedToday = async () => {
 
 		// Delete records not created today
 		const { error } = await supabase
-			.from('your_table_name')
+			.from('flights')
 			.delete()
-			.not('created_at', '>=', startOfTodayISO)
-			.not('created_at', '<=', endOfTodayISO);
+			.lt('created_at', startOfTodayISO);
 
 		if (error) {
 			throw new Error(JSON.stringify(error));

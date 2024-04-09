@@ -1,5 +1,6 @@
 import { Alert } from 'react-native';
 import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export async function fetchFlightData() {
 	const accessKey = '24e40b49d0f65b22757c2e3ae32df4cb';
@@ -14,5 +15,6 @@ export async function fetchFlightData() {
 	} catch (error) {
 		console.error('Error fetching flight data:', error);
 		Alert.alert('Error Fetching Data');
+		AsyncStorage.clear();
 	}
 }

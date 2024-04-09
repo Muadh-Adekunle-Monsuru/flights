@@ -8,11 +8,12 @@ import {
 } from './newDatabase';
 export const callApi = async (setFlights) => {
 	try {
+		// deleteRecordsNotCreatedToday();
 		// Get the current time
 		const currentTime = new Date();
 
 		// Get the last call time from AsyncStorage
-		const lastCallTime = await AsyncStorage.getItem('previousCallTime');
+		const lastCallTime = await AsyncStorage.getItem('prevCallTime');
 
 		if (lastCallTime && isToday(currentTime, new Date(lastCallTime))) {
 			// Alert.alert('API already called today');
@@ -37,7 +38,7 @@ const makeApiCall = async (setFlights) => {
 		getData(setFlights);
 	}
 	// Store the current time as the last call time
-	await AsyncStorage.setItem('previousCallTime', new Date().toISOString());
+	await AsyncStorage.setItem('prevCallTime', new Date().toISOString());
 	console.log('API call successful');
 	// Alert.alert('Api call successful');
 };
